@@ -16,7 +16,7 @@ from zc_spider.weibo_config import (
     QCLOUD_MYSQL, OUTER_MYSQL,
     LOCAL_REDIS, QCLOUD_REDIS
 )
-from weibo_follow_spider_v2 import WeiboRelationSpider
+from weibo_relationship_spider_v2 import WeiboRelationSpider
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

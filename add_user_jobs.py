@@ -6,11 +6,11 @@ import time
 import redis
 from datetime import datetime as dt
 from zc_spider.weibo_config import (
-    RELATION_JOBS_CACHE,  # weibo:blog:urls
+    RELATION_JOBS_CACHE,  # weibo:connection:urls
     QCLOUD_MYSQL, OUTER_MYSQL,
     LOCAL_REDIS, QCLOUD_REDIS
 )
-from weibo_follow_writer import WeiboRelationWriter
+from weibo_relationship_writer import WeiboRelationWriter
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
