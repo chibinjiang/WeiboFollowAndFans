@@ -46,6 +46,7 @@ def user_db_writer(cache):
             dao.insert_follow_into_db(edges)   # ////// broken up, cuz res is string
         except Exception as e:  # won't let you died
             traceback.print_exc()
+            cache.rpush(FOLLOWS_RESULTS_CACHE, res)
             print 'Failed to write result: %s' % edges
         except KeyboardInterrupt as e:
             print "Interrupted in Write process"
@@ -65,7 +66,7 @@ def run_multiple_writer():
     print "All done"
 
 if __name__=="__main__":
-    print "\n\n" + "%s 爬取用户全部关注 began at " % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+    print "\n\n" + "%s 爬取用户全部关注 began at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
     start = time.time()
     run_multiple_writer()
     # single_process()
