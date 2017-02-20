@@ -37,7 +37,7 @@ def user_db_writer(cache):
     Consummer for topics
     """
     cp = mp.current_process()
-    dao = WeiboFollowWriter(USED_DATABASE)
+    dao = WeiboRelationWriter(USED_DATABASE)
     while True:
         print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Write Follow Process pid is %d" % (cp.pid)
         res = cache.blpop(RELATION_RESULTS_CACHE, 0)[1]

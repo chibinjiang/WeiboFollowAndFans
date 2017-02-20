@@ -80,7 +80,6 @@ class WeiboRelationSpider(WeiboSpider):
             # import ipdb; ipdb.set_trace()
             info = {}
             user = card['user']
-            print user
             info['user_url'] = self.user_url
             info['uid'] = user['id']
             info['nickname'] = user['screen_name']
@@ -95,8 +94,5 @@ class WeiboRelationSpider(WeiboSpider):
             elif user.get('verified_type_ext') == 0:
                 info['type'] = 'icon_approve'
             info['create_date'] = dt.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            for k,v in info.items():
-                print k,v
             user_list.append(info)
         return user_list
