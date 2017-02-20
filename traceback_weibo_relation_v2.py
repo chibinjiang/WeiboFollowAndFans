@@ -32,6 +32,7 @@ elif 'centos' in os.environ.get('HOSTNAME'):
 else:
     raise Exception("Unknown Environment, Check it now...")
 
+test_curl = "curl 'http://m.weibo.cn/container/getSecond?containerid=1005052951593932_-_FOLLOWERS&page=1' -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: zh-CN,zh;q=0.8,en;q=0.6,ja;q=0.4' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Cookie: browser=d2VpYm9mYXhpYW4%3D; ALF=1490152433; SCF=Ap11mp4UEZs9ZcoafG0iD1wVDGjdyuPuLY8BpwtpvSEEjGlkm9KzWatdQnjbA3jJbKIxYkvAjJXAdwxlwHvh2T4.; SUB=_2A251ruOKDeRxGeVG7FYT8i_OzzWIHXVXUI3CrDV6PUJbktBeLVrgkW1FqHS0pifSjkyU304satffd4rUtA..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WhxM.AD9EjGmQSc51FnJvMU5JpX5o2p5NHD95Q01hMXeozpeoB4Ws4Dqcj.i--4iK.Ri-z0i--ciK.RiKy8i--fi-z7iK.pi--fi-z4i-zX; SUHB=03oFrWuA6tGj8r; SSOLoginState=1487573979; _T_WM=dd802116204f0330fafcd0d5a89786af; M_WEIBOCN_PARAMS=luicode%3D10000012%26lfid%3D1005053969678078_-_FOLLOWERS' -H 'Connection: keep-alive' --compressed"
 
 def user_info_generator(cache):
     """
@@ -60,8 +61,8 @@ def user_info_generator(cache):
                 account, WEIBO_ACCOUNT_PASSWD, timeout=20)
             spider.use_abuyun_proxy()
             spider.add_request_header()
-            spider.use_cookie_from_curl(cache.hget(NORMAL_COOKIES, account))
-            # spider.use_cookie_from_curl(TEST_CURL_SER)
+            # spider.use_cookie_from_curl(cache.hget(NORMAL_COOKIES, account))
+            spider.use_cookie_from_curl(test_curl)
             status = spider.gen_html_source()
             if status in [404, 20003]:
                 continue
@@ -77,6 +78,7 @@ def user_info_generator(cache):
             print "Interrupted in Spider process"
             cache.rpush(RELATION_JOBS_CACHE, job) # put job back
             break
+        time.sleep(5)
 
 
 def run_all_worker():
@@ -85,7 +87,7 @@ def run_all_worker():
     cp = mp.current_process()
     print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Run All Works Process pid is %d" % (cp.pid)
     try:
-        job_pool = mp.Pool(processes=8,
+        job_pool = mp.Pool(processes=2,
             initializer=user_info_generator, initargs=(job_cache, ))
         job_pool.close(); job_pool.join()
     except Exception as e:
