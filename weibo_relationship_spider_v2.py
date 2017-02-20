@@ -99,4 +99,4 @@ class WeiboRelationSpider(WeiboSpider):
             for k,v in info.items():
                 print k,v
             user_list.append(info)
-        return is_last, user_list
+        return user_list
