@@ -7,10 +7,7 @@ from bs4 import BeautifulSoup as bs
 from datetime import datetime as dt
 from zc_spider.weibo_spider import WeiboSpider
 from zc_spider.weibo_utils import catch_parse_error
-from zc_spider.weibo_config import (
-    MANUAL_COOKIES, WEIBO_ACCOUNT_PASSWD, 
-    LOCAL_REDIS, MAD_MAN_URLS, MAD_MAN_INFO
-)
+from zc_spider.weibo_config import RELATION_JOBS_CACHE
 # init : http://m.weibo.cn/p/second?containerid=1005051652811601_-_FOLLOWERS
 # urls : http://m.weibo.cn/container/getSecond?containerid=100505{user_id}_-_FANS&page=3
 # http://m.weibo.cn/container/getSecond?containerid=100505{user_id}_-_FOLLOWERS
@@ -77,7 +74,7 @@ class WeiboRelationSpider(WeiboSpider):
                 for num in range(1, max_page):
                     next_job = "%s||%s||%s" % (self.uid, 
                         self.user_url, self.url + "&page=%d" % num)
-                    rconn.rpush(next_job)
+                    rconn.rpush(RELATION_JOBS_CACHE, next_job)
 
         for card in data['cards']:
             # import ipdb; ipdb.set_trace()
