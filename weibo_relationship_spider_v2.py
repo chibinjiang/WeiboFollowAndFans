@@ -82,17 +82,17 @@ class WeiboRelationSpider(WeiboSpider):
             user = card['user']
             print user
             info['user_url'] = self.user_url
-            info['uid'] = card['id']
-            info['nickname'] = card['screen_name']
+            info['uid'] = user['id']
+            info['nickname'] = user['screen_name']
             # three number 
             info['blog_num'] = user['statuses_count']
             info['follows'] = user['follow_count']
             info['fans'] = user['followers_count']
-            if card.get('verified_type_ext') == 3:
+            if user.get('verified_type_ext') == 3:
                 info['type'] = 'W_icon icon_approve_co'
-            elif card.get('verified_type_ext') == 1 and card.get('verified_type') in [11, 12]:
+            elif user.get('verified_type_ext') == 1 and user.get('verified_type') in [11, 12]:
                 info['type'] = 'W_icon icon_approve_gold'
-            elif card.get('verified_type_ext') == 0:
+            elif user.get('verified_type_ext') == 0:
                 info['type'] = 'icon_approve'
             info['create_date'] = dt.now().strftime("%Y-%m-%d %H:%M:%S")
 
