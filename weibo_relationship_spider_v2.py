@@ -61,7 +61,7 @@ class WeiboRelationSpider(WeiboSpider):
         return True 
 
     @catch_parse_error((AttributeError, Exception))
-    def parse_relationship(self, rconn):
+    def get_user_follow_list(self, rconn):
         """
         Start url : http://m.weibo.cn/container/getSecond?containerid=100505{uid}_-_FOLLOWERS
         Other urls : start_url + "&page={num}"

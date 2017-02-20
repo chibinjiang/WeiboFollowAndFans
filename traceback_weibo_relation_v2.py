@@ -65,7 +65,7 @@ def user_info_generator(cache):
             status = spider.gen_html_source()
             if status in [404, 20003]:
                 continue
-            f_list = spider.get_user_follow_list()
+            f_list = spider.get_user_follow_list(cache)
             if len(f_list ) > 0:
                 cache.rpush(RELATION_RESULTS_CACHE, pickle.dumps(f_list))  # push string to the tail
         except Exception as e:  # no matter what was raised, cannot let process died
@@ -81,7 +81,7 @@ def user_info_generator(cache):
 def run_all_worker():
     job_cache = redis.StrictRedis(**USED_REDIS)  # list
     print "Redis have %d records in cache" % job_cache.llen(RELATION_JOBS_CACHE)
-    job_pool = mp.Pool(processes=8,
+    job_pool = mp.Pool(processes=1,
         initializer=user_info_generator, initargs=(job_cache, ))
     cp = mp.current_process()
     print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Run All Works Process pid is %d" % (cp.pid)
