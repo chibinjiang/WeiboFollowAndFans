@@ -48,7 +48,7 @@ if __name__=='__main__':
     print "\n\n" + "%s Add users for follow spider began at " % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
     start = time.time()
     r = redis.StrictRedis(**USED_REDIS)
-    if not r.llen(RELATION_JOBS_CACHE):
+    if r.llen(RELATION_JOBS_CACHE):
         print "There are still jobs, please add later ..."
     else:
         add_jobs(r)
