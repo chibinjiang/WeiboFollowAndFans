@@ -46,11 +46,11 @@ def user_db_writer(cache):
             dao.insert_follow_into_db(edges)   # ////// broken up, cuz res is string
         except Exception as e:  # won't let you died
             traceback.print_exc()
-            cache.rpush(FOLLOWS_RESULTS_CACHE, res)
+            cache.rpush(RELATION_RESULTS_CACHE, res)
             print 'Failed to write result: %s' % edges
         except KeyboardInterrupt as e:
             print "Interrupted in Write process"
-            cache.rpush(FOLLOWS_RESULTS_CACHE, res)
+            cache.rpush(RELATION_RESULTS_CACHE, res)
             break
 
 
