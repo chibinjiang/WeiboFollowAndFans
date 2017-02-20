@@ -50,72 +50,55 @@ class WeiboRelationSpider(WeiboSpider):
     }
 
     """
-    def __init__(self, start_url, account, password, timeout=10, delay=1, proxy={}):
+    def __init__(self, usercard, user_url, start_url, account, password, timeout=10, delay=1, proxy={}):
         WeiboSpider.__init__(self, start_url, account, password, timeout=timeout, delay=delay, proxy=proxy)
-        # self.uid = usercard
+        self.uid = usercard
+        self.user_url = user_url
 
     def gen_html_source(self, curl):
         html = os.popen(curl + ' --silent').read()
         self.page = html
-        # import ipdb; ipdb.set_trace()
         return True 
 
     @catch_parse_error((AttributeError, Exception))
     def parse_relationship(self, rconn):
         """
         Start url : http://m.weibo.cn/container/getSecond?containerid=100505{uid}_-_FOLLOWERS
-        Other urls : start_url + "&page={page}"
+        Other urls : start_url + "&page={num}"
         """
         data = json.loads(self.page)
         user_list = []
         if data['ok'] != 1:
             print "Not OK -> message: ", data['msg']
             return user_list
-        card_rexp = re.search(r'100505(\d+)_-_F', data['cardlistInfo']['containerid'])
-        if card_rexp:
-            self.uid = card_rexp.group(1)
-        else:
-            return user_list
-        page_regex = re.search(r'&page=(\d+)', self.url)
-        current_page = page_regex.group(1) if page_regex else 20
-        if data['maxPage'] >= current_page:
-            is_last = True
-        for temp in data['cards']:
+        if "&page=" not in self.url:
+            max_page = int(data['maxPage'])
+            if max_page > 1:
+                for num in range(1, max_page):
+                    next_job = "%s||%s||%s" % (self.uid, 
+                        self.user_url, self.url + "&page=%d" % num)
+                    rconn.rpush(next_job)
+
+        for card in data['cards']:
             # import ipdb; ipdb.set_trace()
-            user = temp['user']
             info = {}
-            info['uid'] = user['id']
-            info['url'] = temp['scheme']
-            info['date'] = dt.now().strftime("%Y-%m-%d %H:%M:%S")
-            if data['title'] == '粉丝':
-                info['ship'] = 'fans'
-                info['left'], info['right'] = user['id'], self.uid
-            elif data['title'] == '关注':
-                info['ship'] = 'follow'
-                info['left'], info['right'] = self.uid, user['id']
-            info['name'] = user['screen_name']
-            info['gender'] = user['gender']
+            user = card['user']
+            info['user_url'] = self.user_url
+            info['uid'] = card['id']
+            info['nickname'] = card['screen_name']
             # three number 
             info['blog_num'] = user['statuses_count']
             info['follows'] = user['follow_count']
             info['fans'] = user['followers_count']
-            info['image'] = '' if 'default' in user['profile_image_url'] else user['profile_image_url']
-            info['intro'] = user.get('verified_reason', '')
-            # verified
-            info['verified'] = user['verified']
-            info['verified_type'] = user['verified_type']
-            # rank 
-            info["mbtype"] = user['mbtype']
-            info["rank"] = user['urank']   # 9 is red V; 36 is yellow
-            info["mbrank"] =  user['mbrank']
-            desc1 = '' if user['desc1'] == 'null' or not user['desc1'] else user['desc1']
-            desc2 = '' if user['desc2'] == 'null' or not user['desc2'] else user['desc2']
-            if len(desc1) > 0 and len(desc2) > 0:
-                info['desc'] = desc1 + ' . ' + desc2
-            elif len(desc1) > 0:
-                info['desc'] = desc1
-            else:
-                info['desc'] = ''
+            if card.get('verified_type_ext') == 3:
+                info['type'] = 'W_icon icon_approve_co'
+            elif card.get('verified_type_ext') == 1 
+                and card.get('verified_type') in [11, 12]:
+                info['type'] = 'W_icon icon_approve_gold'
+            elif card.get('verified_type_ext') == 0:
+                info['type'] = 'icon_approve'
+            info['create_date'] = dt.now().strftime("%Y-%m-%d %H:%M:%S")
+
             for k,v in info.items():
                 print k,v
             user_list.append(info)
