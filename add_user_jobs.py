@@ -43,20 +43,14 @@ def add_jobs(target):
     print 'There are totally %d jobs to process' % todo
     return todo
 
-def adjust_whether_add():
-    ps = os.popen('ps -ef | pgrep -f "add_user_jobs"').read().split('\n')[:-2]  # one unvertained process id
-    print ps  # should be 2 processes: py & crontab
-    if len(ps) > 3:
-         return False
-    return True
 
 if __name__=='__main__':
-    print "\n\n" + "%s 爬取用户全部关注 began at " % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+    print "\n\n" + "%s Add users for follow spider began at " % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
     start = time.time()
-    if not adjust_whether_add():
-        print "Add Usr Jobs is busy, please try later ..."
+    r = redis.StrictRedis(**USED_REDIS)
+    if not r.llen(RELATION_JOBS_CACHE):
+        print "There are still jobs, please add later ..."
     else:
-        r = redis.StrictRedis(**USED_REDIS)
         add_jobs(r)
     print "*"*10, "Totally Time Consumed : %d seconds" % (time.time() - start), "*"*10
     
