@@ -98,11 +98,11 @@ class WeiboRelationWriter(DBAccesor):
         try:
             for user in user_list:
                 if cursor.execute(insert_sql, ('', 
-                    user['user_url'], res.get('nickname', ''), 
-                    res.get('fans', ''), res.get('blog_num', ''), 
-                    res.get('follows', ''), res.get('type', ''), 
-                    res['uid'], res['create_date'], 
-                    res['user_url'], res['usercard']
+                    user['user_url'], user.get('nickname', ''), 
+                    user.get('fans', ''), user.get('blog_num', ''), 
+                    user.get('follows', ''), user.get('type', ''), 
+                    user['uid'], user['create_date'], 
+                    user['user_url'], user['usercard']
                 )):
                     print '$'*10, 'Write relation info succeeded !'
                 else:
