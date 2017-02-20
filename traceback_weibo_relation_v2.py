@@ -12,7 +12,7 @@ import multiprocessing as mp
 from requests.exceptions import ConnectionError
 from zc_spider.weibo_config import (
     RELATION_JOBS_CACHE, RELATION_RESULTS_CACHE,
-    WEIBO_ACCOUNT_PASSWD, NORMAL_COOKIES
+    WEIBO_ACCOUNT_PASSWD, NORMAL_COOKIES,
     QCLOUD_MYSQL, OUTER_MYSQL,
     LOCAL_REDIS, QCLOUD_REDIS
 )
