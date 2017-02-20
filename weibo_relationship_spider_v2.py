@@ -80,6 +80,7 @@ class WeiboRelationSpider(WeiboSpider):
             # import ipdb; ipdb.set_trace()
             info = {}
             user = card['user']
+            print user
             info['user_url'] = self.user_url
             info['uid'] = card['id']
             info['nickname'] = card['screen_name']
