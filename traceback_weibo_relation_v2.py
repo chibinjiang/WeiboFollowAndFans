@@ -81,20 +81,19 @@ def user_info_generator(cache):
 def run_all_worker():
     job_cache = redis.StrictRedis(**USED_REDIS)  # list
     print "Redis have %d records in cache" % job_cache.llen(RELATION_JOBS_CACHE)
-    job_pool = mp.Pool(processes=1,
-        initializer=user_info_generator, initargs=(job_cache, ))
     cp = mp.current_process()
     print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Run All Works Process pid is %d" % (cp.pid)
     try:
-        job_pool.close()
-        job_pool.join()
+        job_pool = mp.Pool(processes=1,
+            initializer=user_info_generator, initargs=(job_cache, ))
+        job_pool.close(); job_pool.join()
     except Exception as e:
         traceback.print_exc()
         print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Exception raise in runn all Work"
     except KeyboardInterrupt:
         print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Interrupted by you and quit in force, but save the results"
-    print "+"*10, "jobs' length is ", job_cache.llen(FOLLOWS_JOBS_CACHE) #jobs.llen(FOLLOWS_JOBS_CACHE)
-    print "+"*10, "results' length is ", job_cache.llen(FOLLOWS_RESULTS_CACHE) #jobs.llen(FOLLOWS_JOBS_CACHE)
+    print "+"*10, "jobs' length is ", job_cache.llen(RELATION_JOBS_CACHE) #jobs.llen(FOLLOWS_JOBS_CACHE)
+    print "+"*10, "results' length is ", job_cache.llen(RELATION_RESULTS_CACHE) #jobs.llen(FOLLOWS_JOBS_CACHE)
 
 
 if __name__=="__main__":
