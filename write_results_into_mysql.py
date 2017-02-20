@@ -45,7 +45,8 @@ def user_db_writer(cache):
         try:
             dao.insert_follow_into_db(edges)   # ////// broken up, cuz res is string
         except Exception as e:  # won't let you died
-            print 'Failed to write result: %d' % edges
+            traceback.print_exc()
+            print 'Failed to write result: %s' % edges
         except KeyboardInterrupt as e:
             print "Interrupted in Write process"
             cache.rpush(FOLLOWS_RESULTS_CACHE, res)
