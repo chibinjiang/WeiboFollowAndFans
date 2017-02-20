@@ -55,7 +55,7 @@ class WeiboRelationSpider(WeiboSpider):
         self.uid = usercard
         self.user_url = user_url
 
-    def gen_html_source(self, curl):
+    def gen_html_source_d(self, curl):
         html = os.popen(curl + ' --silent').read()
         self.page = html
         return True 
