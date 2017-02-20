@@ -92,8 +92,7 @@ class WeiboRelationSpider(WeiboSpider):
             info['fans'] = user['followers_count']
             if card.get('verified_type_ext') == 3:
                 info['type'] = 'W_icon icon_approve_co'
-            elif card.get('verified_type_ext') == 1:
-                and card.get('verified_type') in [11, 12]:
+            elif card.get('verified_type_ext') == 1 and card.get('verified_type') in [11, 12]:
                 info['type'] = 'W_icon icon_approve_gold'
             elif card.get('verified_type_ext') == 0:
                 info['type'] = 'icon_approve'
