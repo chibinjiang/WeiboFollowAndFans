@@ -66,7 +66,7 @@ def run_multiple_writer():
     print "All done"
 
 if __name__=="__main__":
-    print "\n\n" + "%s 爬取用户全部关注 began at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+    print "\n\n" + "爬取用户全部关注 began at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
     start = time.time()
     run_multiple_writer()
     # single_process()

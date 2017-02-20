@@ -45,7 +45,7 @@ def add_jobs(target):
 
 
 if __name__=='__main__':
-    print "\n\n" + "%s Add users for follow spider began at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+    print "\n\n" + "Add users for follow spider began at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
     start = time.time()
     r = redis.StrictRedis(**USED_REDIS)
     if r.llen(RELATION_JOBS_CACHE):

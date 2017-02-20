@@ -97,7 +97,7 @@ def run_all_worker():
 
 
 if __name__=="__main__":
-    print "\n\n" + "%s Began Scraped Weibo User Follows at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+    print "\n\n" + "Began Scraped Weibo User Follows at %s" % dt.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
     start = time.time()
     run_all_worker()
     # single_process()
