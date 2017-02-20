@@ -107,7 +107,7 @@ class WeiboRelationWriter(DBAccesor):
                     print '$'*10, 'Write relation(%s->%s) info succeeded !' % (user['user_url'], user['uid'])
                 else:
                     print "Relation Existed"
-            # conn.commit(); cursor.close(); conn.close()
+            conn.commit(); cursor.close(); conn.close()
         except Exception as e:
             traceback.print_exc()
             conn.commit(); cursor.close(); conn.close()

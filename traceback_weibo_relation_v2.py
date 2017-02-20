@@ -67,6 +67,7 @@ def user_info_generator(cache):
                 continue
             f_list = spider.get_user_follow_list(cache)
             if len(f_list ) > 0:
+                print "Get relation for %s succeeded .." % user_url
                 cache.rpush(RELATION_RESULTS_CACHE, pickle.dumps(f_list))  # push string to the tail
         except Exception as e:  # no matter what was raised, cannot let process died
             cache.rpush(RELATION_JOBS_CACHE, job) # put job back
@@ -84,7 +85,7 @@ def run_all_worker():
     cp = mp.current_process()
     print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Run All Works Process pid is %d" % (cp.pid)
     try:
-        job_pool = mp.Pool(processes=1,
+        job_pool = mp.Pool(processes=8,
             initializer=user_info_generator, initargs=(job_cache, ))
         job_pool.close(); job_pool.join()
     except Exception as e:

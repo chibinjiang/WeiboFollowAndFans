@@ -57,7 +57,7 @@ def user_db_writer(cache):
 def run_multiple_writer():
     r = redis.StrictRedis(**USED_REDIS)  # list
     try:
-        p = mp.Pool(processes=1, initializer=user_db_writer, initargs=(r, ))
+        p = mp.Pool(processes=4, initializer=user_db_writer, initargs=(r, ))
         p.close(); p.join()
     except Exception as e:
         print "Exception Occured: " + str(e)
