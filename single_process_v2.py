@@ -63,7 +63,7 @@ def user_info_generator(cache):
             spider.add_request_header()
             # spider.use_cookie_from_curl(cache.hget(NORMAL_COOKIES, account))
             spider.use_cookie_from_curl(test_curl)
-            status = spider.gen_html_source()
+            status = spider.gen_html_source(min_text=100)
             if status in [404, 20003]:
                 continue
             f_list = spider.get_user_follow_list(cache)

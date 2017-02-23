@@ -12,7 +12,7 @@ import multiprocessing as mp
 from requests.exceptions import ConnectionError
 from zc_spider.weibo_config import (
     RELATION_JOBS_CACHE, RELATION_RESULTS_CACHE,
-    WEIBO_ACCOUNT_PASSWD, NORMAL_COOKIES,
+    WEIBO_ACCOUNT_PASSWD, WEIBO_COOKIES,
     QCLOUD_MYSQL, OUTER_MYSQL,
     LOCAL_REDIS, QCLOUD_REDIS
 )
@@ -51,7 +51,7 @@ def user_info_generator(cache):
         job = cache.blpop(RELATION_JOBS_CACHE, 0)[1]   # blpop 获取队列数据
         try:
             # operate spider
-            all_account = cache.hkeys(NORMAL_COOKIES)
+            all_account = cache.hkeys(WEIBO_COOKIES)
             if len(all_account) == 0:
                 time.sleep(pow(2, loop_count))
                 continue
@@ -61,9 +61,9 @@ def user_info_generator(cache):
                 account, WEIBO_ACCOUNT_PASSWD, timeout=20)
             spider.use_abuyun_proxy()
             spider.add_request_header()
-            # spider.use_cookie_from_curl(cache.hget(NORMAL_COOKIES, account))
+            # spider.use_cookie_from_curl(cache.hget(WEIBO_COOKIES, account))
             spider.use_cookie_from_curl(test_curl)
-            status = spider.gen_html_source()
+            status = spider.gen_html_source(min_text=100)
             if status in [404, 20003]:
                 continue
             f_list = spider.get_user_follow_list(cache)
@@ -87,7 +87,7 @@ def run_all_worker():
     cp = mp.current_process()
     print dt.now().strftime("%Y-%m-%d %H:%M:%S"), "Run All Works Process pid is %d" % (cp.pid)
     try:
-        job_pool = mp.Pool(processes=2,
+        job_pool = mp.Pool(processes=4,
             initializer=user_info_generator, initargs=(job_cache, ))
         job_pool.close(); job_pool.join()
     except Exception as e:
